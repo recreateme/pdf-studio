@@ -1,8 +1,9 @@
-# PDF Studio
+# pd-studio
 
-> **WPS 免费版 PDF 工具箱补位** · 本地离线 · 无广告 · 跨平台桌面应用
+> **WPS 免费版 PDF 工具箱补位** · 本地离线 · 无广告 · 跨平台桌面应用  
+> 联系：1299800632@qq.com
 
-在 WPS 免费版中阅读与编辑文档；当需要 **WPS 会员才提供的 PDF 处理能力**（拆分、合并、压缩、加密、水印、OCR 等）时，使用 PDF Studio 在本地免费完成。
+在 WPS 免费版中阅读与编辑文档；当需要 **WPS 会员才提供的 PDF 处理能力**（拆分、合并、压缩、加密、水印、OCR 等）时，使用 pd-studio 在本地免费完成。
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
 [![PyQt6](https://img.shields.io/badge/PyQt6-6.6+-green.svg)](https://pypi.org/project/PyQt6/)
@@ -26,7 +27,6 @@
 | **图片工具** | PDF↔图片 · 长图/网格合并 · **图片压缩** · 扫描增强 | 对应 WPS 会员「PDF 转图片」及日常图片处理 |
 | **OCR 识别** | 中/英/日/韩 · 离线 · 可配模型/GPU | 对应 WPS 会员「OCR」 |
 | **网页转 PDF** | Chromium · 懒加载 · 网页长截图 | 本地网页采集 |
-| **批处理中心** | 多步骤工作流 · 失败自动重试 | 批量自动化 |
 | **阅读批注** | 按需渲染 · 搜索 · 全套批注工具 | 可配合 WPS 免费阅读 |
 | **任务队列** | 首页后台任务 · 排队 · 满队提示 | 多任务并行管理 |
 

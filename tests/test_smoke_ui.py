@@ -39,13 +39,6 @@ class TestSmokeUIPages:
         qtbot.addWidget(page)
         assert page.objectName() == "dashboardPage"
 
-    def test_batch_page_instantiates(self, qapp, qtbot):
-        from app.pages.batch_page import BatchPage
-
-        page = BatchPage()
-        qtbot.addWidget(page)
-        assert page.objectName() == "batchPage"
-
 
 def test_settings_page_without_qtbot(qapp):
     """无 pytest-qt 时仍可验证页面可构造"""

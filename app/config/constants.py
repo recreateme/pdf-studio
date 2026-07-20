@@ -7,11 +7,13 @@ from pathlib import Path
 # ─────────────────────────────────────────────
 # 应用信息
 # ─────────────────────────────────────────────
-APP_NAME = "PDF Studio"
+APP_NAME = "pd-studio"
 APP_VERSION = "1.0.0"
-APP_AUTHOR = "PDF Studio Team"
+APP_AUTHOR = "1299800632@qq.com"
+APP_CONTACT = "1299800632@qq.com"
+APP_WINDOW_TITLE = "pd-studio 1299800632@qq.com"
 APP_DESCRIPTION = "WPS 免费版 PDF 工具箱补位 · 本地离线 · 无广告"
-APP_HOMEPAGE = "https://github.com/pdf-studio"
+APP_HOMEPAGE = "https://github.com/recreateme/pdf-studio"
 
 # 各功能页 WPS 对标说明（副标题旁注）
 PAGE_WPS_HINTS: dict[str, str] = {
@@ -26,7 +28,6 @@ PAGE_WPS_HINTS: dict[str, str] = {
     "image": "补位 WPS 会员：PDF 转图片 · 长图/拼图合并 · 扫描增强",
     "ocr": "补位 WPS 会员：OCR 文字识别",
     "web": "网页采集：转 PDF / 长截图",
-    "batch": "补位 WPS 会员：批量 PDF 处理",
     "reader": "配合 WPS 免费阅读：深度批注与保存",
 }
 
@@ -43,7 +44,6 @@ DASHBOARD_WPS_BADGES: dict[str, str] = {
     "tools": "WPS 会员 · 本地免费",
     "image": "WPS 会员 · 本地免费",
     "ocr": "WPS 会员 · 本地免费",
-    "batch": "WPS 会员 · 本地免费",
     "reader": "配合 WPS 免费阅读",
 }
 

@@ -72,12 +72,9 @@ class WebSettings(BaseModel):
 
 
 class WorkflowSettings(BaseModel):
-    """批处理工作流设置"""
+    """后台任务队列与性能设置"""
     max_workers: int = Field(default=4, ge=1, le=16)
     queue_max_size: int = Field(default=100, ge=10, le=1000)
-    auto_retry_on_failure: bool = True
-    retry_count: int = Field(default=3, ge=1, le=10)
-    save_workflow_history: bool = True
 
 
 class LogSettings(BaseModel):

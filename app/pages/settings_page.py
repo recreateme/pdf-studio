@@ -15,7 +15,7 @@ from qfluentwidgets import (
 )
 
 from app.config.settings import settings_mgr, AppSettings
-from app.config.constants import APP_VERSION
+from app.config.constants import APP_NAME, APP_VERSION, APP_CONTACT
 from app.widgets.common import show_success, show_info, show_error, show_warning
 from app.widgets.combo_box import StudioComboBox
 from app.utils.helpers import clean_temp, open_in_explorer
@@ -93,7 +93,7 @@ class SettingsPage(ScrollArea):
         root.setSpacing(24)
 
         root.addWidget(TitleLabel("设置"))
-        root.addWidget(CaptionLabel(f"PDF Studio  v{APP_VERSION}"))
+        root.addWidget(CaptionLabel(f"{APP_NAME}  v{APP_VERSION} · {APP_CONTACT}"))
 
         # ── 外观 ───────────────────────────────
         root.addWidget(SubtitleLabel("外观"))
@@ -369,46 +369,6 @@ class SettingsPage(ScrollArea):
 
         root.addWidget(web_card)
 
-        # ── 批处理工作流 ───────────────────────
-        root.addWidget(SubtitleLabel("批处理工作流"))
-        wf_card = CardWidget()
-        wf_l = QVBoxLayout(wf_card)
-        wf_l.setContentsMargins(20, 16, 20, 16)
-        wf_l.setSpacing(4)
-
-        retry_row = SettingRow("失败自动重试", "单个步骤失败时按下方次数重试")
-        self._wf_auto_retry = SwitchButton()
-        retry_row.add_control(self._wf_auto_retry)
-        wf_l.addWidget(retry_row)
-        wf_l.addWidget(self._separator())
-
-        retry_count_row = SettingRow(
-            "重试次数",
-            "每个失败步骤的最大尝试次数",
-            control_width=SettingRow.SPIN_CONTROL_WIDTH,
-        )
-        self._wf_retry_count = self._make_spin(1, 10)
-        retry_count_row.add_control(self._wf_retry_count)
-        wf_l.addWidget(retry_count_row)
-        wf_l.addWidget(self._separator())
-
-        queue_row = SettingRow(
-            "任务队列上限",
-            "进行中 + 排队任务总数上限；满后将拒绝新任务并提示",
-            control_width=SettingRow.SPIN_CONTROL_WIDTH,
-        )
-        self._wf_queue_max = self._make_spin(10, 1000)
-        queue_row.add_control(self._wf_queue_max)
-        wf_l.addWidget(queue_row)
-        wf_l.addWidget(self._separator())
-
-        history_row = SettingRow("保存工作流历史", "记录批处理执行摘要（预留）")
-        self._wf_save_history = SwitchButton()
-        history_row.add_control(self._wf_save_history)
-        wf_l.addWidget(history_row)
-
-        root.addWidget(wf_card)
-
         # ── 线程与性能 ─────────────────────────
         root.addWidget(SubtitleLabel("性能"))
         perf_card = CardWidget()
@@ -424,6 +384,16 @@ class SettingsPage(ScrollArea):
         self._max_workers = self._make_spin(1, 16)
         thread_row.add_control(self._max_workers)
         perf_l.addWidget(thread_row)
+        perf_l.addWidget(self._separator())
+
+        queue_row = SettingRow(
+            "任务队列上限",
+            "进行中 + 排队任务总数上限；满后将拒绝新任务并提示",
+            control_width=SettingRow.SPIN_CONTROL_WIDTH,
+        )
+        self._wf_queue_max = self._make_spin(10, 1000)
+        queue_row.add_control(self._wf_queue_max)
+        perf_l.addWidget(queue_row)
 
         root.addWidget(perf_card)
 
@@ -591,11 +561,7 @@ class SettingsPage(ScrollArea):
         self._web_enable_js.setChecked(w.enable_javascript)
         self._web_batch_parallel.setValue(w.batch_concurrency)
 
-        self._wf_auto_retry.setChecked(wf.auto_retry_on_failure)
-        self._wf_retry_count.setValue(wf.retry_count)
         self._wf_queue_max.setValue(wf.queue_max_size)
-        self._wf_save_history.setChecked(wf.save_workflow_history)
-
         self._max_workers.setValue(wf.max_workers)
 
         level_map = {"DEBUG": 0, "INFO": 1, "WARNING": 2, "ERROR": 3}
@@ -681,10 +647,7 @@ class SettingsPage(ScrollArea):
             s.web.enable_javascript = self._web_enable_js.isChecked()
             s.web.batch_concurrency = self._web_batch_parallel.value()
 
-            s.workflow.auto_retry_on_failure = self._wf_auto_retry.isChecked()
-            s.workflow.retry_count = self._wf_retry_count.value()
             s.workflow.queue_max_size = self._wf_queue_max.value()
-            s.workflow.save_workflow_history = self._wf_save_history.isChecked()
             s.workflow.max_workers = self._max_workers.value()
 
             level_keys = ["DEBUG", "INFO", "WARNING", "ERROR"]

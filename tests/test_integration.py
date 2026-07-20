@@ -231,20 +231,3 @@ class TestIntegrationWeb:
         )
         result = proc.url_to_pdf("https://example.com", options)
         assert result.exists() and result.stat().st_size > 1000
-
-
-# ─────────────────────────────────────────────
-# 批处理工作流
-# ─────────────────────────────────────────────
-
-class TestIntegrationBatch:
-    def test_compress_only_workflow(self, integration_pdf_dir, tmp_path):
-        from app.pages.batch_page import BatchWorkflowWorker
-
-        pdf = _first_pdf(integration_pdf_dir)
-        workflow = {"compress_enabled": True, "compress_mode": "balanced"}
-        worker = BatchWorkflowWorker([str(pdf)], workflow, str(tmp_path))
-        results = worker.run_task()
-        assert len(results) == 1
-        assert results[0]["output"] is not None
-        assert Path(results[0]["output"]).exists()

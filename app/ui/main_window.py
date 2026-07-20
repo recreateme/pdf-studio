@@ -22,7 +22,7 @@ from qfluentwidgets import (
 from qfluentwidgets.components.navigation import NavigationDisplayMode
 
 from app.config.constants import (
-    APP_NAME, APP_VERSION,
+    APP_NAME, APP_VERSION, APP_WINDOW_TITLE,
     MAIN_WINDOW_DEFAULT_WIDTH, MAIN_WINDOW_DEFAULT_HEIGHT,
     MAIN_WINDOW_MIN_WIDTH, MAIN_WINDOW_MIN_HEIGHT,
     THEME_COLOR_LIGHT, ICONS_DIR,
@@ -40,7 +40,6 @@ from app.pages.image_page import ImagePage
 from app.pages.compress_page import CompressPage
 from app.pages.encrypt_page import EncryptPage
 from app.pages.watermark_page import WatermarkPage
-from app.pages.batch_page import BatchPage
 from app.pages.pages_manage_page import PagesManagePage
 from app.pages.reader_page import ReaderPage
 from app.pages.tools_page import ToolsPage
@@ -68,7 +67,7 @@ class MainWindow(FluentWindow):
     # ── 窗口初始化 ────────────────────────────
 
     def _init_window(self) -> None:
-        self.setWindowTitle(f"{APP_NAME}  v{APP_VERSION}")
+        self.setWindowTitle(APP_WINDOW_TITLE)
         self.setMinimumSize(MAIN_WINDOW_MIN_WIDTH, MAIN_WINDOW_MIN_HEIGHT)
         self.resize(MAIN_WINDOW_DEFAULT_WIDTH, MAIN_WINDOW_DEFAULT_HEIGHT)
 
@@ -90,6 +89,9 @@ class MainWindow(FluentWindow):
         if icon_path is not None:
             icon = QIcon(str(icon_path))
             self.setWindowIcon(icon)
+            # Fluent 标题栏左上角图标
+            if hasattr(self, "setIcon"):
+                self.setIcon(icon)
             app = QApplication.instance()
             if app is not None:
                 app.setWindowIcon(icon)
@@ -182,7 +184,6 @@ class MainWindow(FluentWindow):
         self.compress_page  = CompressPage(self)
         self.encrypt_page   = EncryptPage(self)
         self.watermark_page = WatermarkPage(self)
-        self.batch_page     = BatchPage(self)
         self.settings_page  = SettingsPage(self)
 
     # ── 导航栏配置 ────────────────────────────
@@ -264,14 +265,6 @@ class MainWindow(FluentWindow):
             "网页转PDF",
         )
 
-        nav.addSeparator()
-
-        self.addSubInterface(
-            self.batch_page,
-            FluentIcon.CALORIES,
-            "批处理中心",
-        )
-
         # ── 底部组 ────────────────────────────
         self.addSubInterface(
             self.settings_page,
@@ -316,7 +309,6 @@ class MainWindow(FluentWindow):
             "encrypt":  self.encrypt_page,
             "watermark":self.watermark_page,
             "tools":    self.tools_page,
-            "batch":    self.batch_page,
             "settings": self.settings_page,
         }
         if page_name in page_map:

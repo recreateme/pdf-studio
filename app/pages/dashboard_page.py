@@ -188,7 +188,6 @@ class DashboardPage(ScrollArea):
             (FluentIcon.GLOBE,     "网页转PDF", "内置Chromium，支持懒加载", "#E74856", "web"),
             (FluentIcon.DEVELOPER_TOOLS,"PDF 工具","去水印 · 表单 · 签名",   "#8764B8", "tools"),
             (FluentIcon.FINGERPRINT,"加密解密", "密码保护与权限控制",        "#7A7574", "encrypt"),
-            (FluentIcon.CALORIES,  "批处理中心","工作流自动化批量处理",      "#69797E", "batch"),
         ]
 
         main_window = self.window()

@@ -1203,45 +1203,9 @@ class TestExtendedSettings:
         assert s.web.scroll_wait == 0.5
         assert s.web.max_scroll_times == 20
         assert s.web.print_background is True
-        assert s.workflow.auto_retry_on_failure is True
-        assert s.workflow.retry_count == 3
         assert s.workflow.queue_max_size == 100
+        assert s.workflow.max_workers == 4
         assert s.web.batch_concurrency == 2
-
-    def test_workflow_history_store(self, monkeypatch, tmp_path):
-        from app.config.settings import SettingsManager
-        from app.utils.workflow_history import WorkflowHistoryStore
-
-        monkeypatch.setattr(SettingsManager, "CONFIG_DIR", tmp_path)
-        mgr = SettingsManager.get_instance()
-        s = mgr.settings
-        s.workflow.save_workflow_history = True
-        wf = {"compress_enabled": True, "compress_mode": "balanced", "encrypt_password": "secret"}
-        results = [{"file": "a.pdf", "error": None}, {"file": "b.pdf", "error": "x"}]
-        WorkflowHistoryStore.append_from_run(wf, str(tmp_path / "out"), 2, results)
-        entries = WorkflowHistoryStore.load()
-        assert len(entries) == 1
-        assert entries[0].success_count == 1
-        assert entries[0].workflow.get("encrypt_password") == ""
-        s.workflow.save_workflow_history = False
-        WorkflowHistoryStore.append_from_run(wf, str(tmp_path / "out2"), 1, results[:1])
-        assert len(WorkflowHistoryStore.load()) == 1
-
-    def test_workflow_history_from_run_steps(self):
-        from app.utils.workflow_history import WorkflowHistoryEntry
-
-        entry = WorkflowHistoryEntry.from_run(
-            {
-                "ocr_enabled": True,
-                "compress_enabled": True,
-                "watermark_enabled": False,
-            },
-            "/tmp/out",
-            3,
-            [{"error": None}, {"error": None}],
-        )
-        assert "OCR" in entry.steps_summary
-        assert "压缩" in entry.steps_summary
 
     def test_ocr_model_paths_serialization(self):
         from app.config.settings import AppSettings
@@ -1269,31 +1233,6 @@ class TestExtendedSettings:
         assert s2.reader.layout_mode == "dual"
 
 
-class TestRetryHelper:
-    def test_run_with_retry_success(self):
-        from app.utils.retry import run_with_retry
-
-        calls = {"n": 0}
-
-        def work():
-            calls["n"] += 1
-            if calls["n"] < 2:
-                raise ValueError("transient")
-            return "ok"
-
-        assert run_with_retry(work, max_attempts=3) == "ok"
-        assert calls["n"] == 2
-
-    def test_run_with_retry_exhausted(self):
-        from app.utils.retry import run_with_retry
-
-        def always_fail():
-            raise RuntimeError("always")
-
-        with pytest.raises(RuntimeError, match="always"):
-            run_with_retry(always_fail, max_attempts=2)
-
-
 class TestOCREngineConfig:
     def test_rapidocr_kwargs_from_settings(self, tmp_path):
         from app.config.settings import OCRSettings
@@ -1313,23 +1252,6 @@ class TestOCREngineConfig:
         cfg = OCRSettings(det_model_path="/nonexistent/det.onnx")
         kwargs = RapidOCREngine(cfg)._build_rapidocr_kwargs()
         assert "det_model_path" not in kwargs
-
-
-class TestBatchWorkflow:
-    def test_workflow_max_attempts_respects_settings(self, monkeypatch):
-        from app.config.settings import AppSettings, SettingsManager
-        from app.pages import batch_page
-
-        s = AppSettings()
-        s.workflow.auto_retry_on_failure = False
-        s.workflow.retry_count = 5
-        mgr = SettingsManager.__new__(SettingsManager)
-        mgr._settings = s
-        monkeypatch.setattr(batch_page, "settings_mgr", mgr)
-        assert batch_page._workflow_max_attempts() == 1
-
-        s.workflow.auto_retry_on_failure = True
-        assert batch_page._workflow_max_attempts() == 5
 
 
 class TestTaskHub:
