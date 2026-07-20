@@ -18,7 +18,7 @@ from app.config.settings import settings_mgr, AppSettings
 from app.config.constants import APP_NAME, APP_VERSION, APP_CONTACT
 from app.widgets.common import show_success, show_info, show_error, show_warning
 from app.widgets.combo_box import StudioComboBox
-from app.utils.helpers import clean_temp, open_in_explorer
+from app.utils.helpers import clean_temp
 from app.utils.logger import logger
 
 
@@ -397,32 +397,6 @@ class SettingsPage(ScrollArea):
 
         root.addWidget(perf_card)
 
-        # ── 日志 ───────────────────────────────
-        root.addWidget(SubtitleLabel("日志"))
-        log_card = CardWidget()
-        log_l = QVBoxLayout(log_card)
-        log_l.setContentsMargins(20, 16, 20, 16)
-        log_l.setSpacing(4)
-
-        level_row = SettingRow(
-            "日志级别",
-            "保存后立即生效",
-            control_width=SettingRow.COMBO_CONTROL_WIDTH,
-        )
-        self._log_level = self._make_combo()
-        self._log_level.addItems(["DEBUG", "INFO", "WARNING", "ERROR"])
-        level_row.add_control(self._log_level)
-        log_l.addWidget(level_row)
-        log_l.addWidget(self._separator())
-
-        open_log_row = SettingRow("查看日志文件", "在文件管理器中打开日志目录")
-        open_log_btn = PushButton("打开日志目录")
-        open_log_btn.clicked.connect(self._open_log_dir)
-        open_log_row.add_control(open_log_btn)
-        log_l.addWidget(open_log_row)
-
-        root.addWidget(log_card)
-
         # ── 缓存与最近文件 ─────────────────────
         root.addWidget(SubtitleLabel("数据管理"))
         data_card = CardWidget()
@@ -513,7 +487,6 @@ class SettingsPage(ScrollArea):
         o = settings_mgr.ocr
         w = settings_mgr.web
         wf = settings_mgr.workflow
-        lg = settings_mgr.log
 
         self._theme_combo.blockSignals(True)
         theme_map = {"auto": 0, "light": 1, "dark": 2}
@@ -564,9 +537,6 @@ class SettingsPage(ScrollArea):
         self._wf_queue_max.setValue(wf.queue_max_size)
         self._max_workers.setValue(wf.max_workers)
 
-        level_map = {"DEBUG": 0, "INFO": 1, "WARNING": 2, "ERROR": 3}
-        self._log_level.setCurrentIndex(level_map.get(lg.level, 1))
-
     def _on_theme_changed(self, idx: int):
         theme_list = [Theme.AUTO, Theme.LIGHT, Theme.DARK]
         setTheme(theme_list[idx])
@@ -587,12 +557,6 @@ class SettingsPage(ScrollArea):
         )
         if path:
             line_edit.setText(path)
-
-    def _open_log_dir(self):
-        from app.config.constants import LOGS_DIR
-
-        LOGS_DIR.mkdir(parents=True, exist_ok=True)
-        open_in_explorer(LOGS_DIR)
 
     def _clean_temp(self):
         clean_temp()
@@ -650,9 +614,6 @@ class SettingsPage(ScrollArea):
             s.workflow.queue_max_size = self._wf_queue_max.value()
             s.workflow.max_workers = self._max_workers.value()
 
-            level_keys = ["DEBUG", "INFO", "WARNING", "ERROR"]
-            s.log.level = level_keys[self._log_level.currentIndex()]
-
             settings_mgr.save()
             settings_mgr.apply_runtime_settings()
 
@@ -665,7 +626,7 @@ class SettingsPage(ScrollArea):
             show_success(
                 self.window(),
                 "设置已保存",
-                "日志级别与线程数已立即生效；DPI/输出目录等将在各功能页下次使用时应用",
+                "线程数已立即生效；DPI/输出目录等将在各功能页下次使用时应用",
             )
         except Exception as e:
             logger.exception(f"保存设置失败: {e}")

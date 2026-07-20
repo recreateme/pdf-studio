@@ -20,7 +20,6 @@ class GeneralSettings(BaseModel):
     theme: Literal["light", "dark", "auto"] = "auto"
     language: Literal["zh_CN", "en_US", "ja_JP"] = "zh_CN"
     max_recent_files: int = Field(default=20, ge=5, le=100)
-    auto_save_logs: bool = True
     check_updates: bool = False          # 离线模式默认关闭
     show_toolbar_labels: bool = True
     window_width: int = Field(default=1280, ge=800)
@@ -77,14 +76,6 @@ class WorkflowSettings(BaseModel):
     queue_max_size: int = Field(default=100, ge=10, le=1000)
 
 
-class LogSettings(BaseModel):
-    """日志设置"""
-    level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
-    max_file_size: str = "10 MB"
-    retention: str = "7 days"
-    log_dir: str = "logs"
-
-
 class ReaderSettings(BaseModel):
     """阅读批注视图偏好"""
     fit_mode: Literal["fit_width", "fit_height", "actual", "fixed"] = "fit_width"
@@ -105,7 +96,6 @@ class AppSettings(BaseModel):
     ocr: OCRSettings = Field(default_factory=OCRSettings)
     web: WebSettings = Field(default_factory=WebSettings)
     workflow: WorkflowSettings = Field(default_factory=WorkflowSettings)
-    log: LogSettings = Field(default_factory=LogSettings)
     reader: ReaderSettings = Field(default_factory=ReaderSettings)
     recent_files: list[str] = Field(default_factory=list)
 
@@ -167,10 +157,10 @@ class SettingsManager:
         self.save()
 
     def apply_runtime_settings(self) -> None:
-        """应用需立即生效的运行时配置（日志级别、线程池等）"""
+        """应用需立即生效的运行时配置（线程池等）"""
         from app.utils.logger import setup_logger
 
-        setup_logger(self.log.level)
+        setup_logger()  # 无文件日志；仅确保 sink 已清空
         try:
             from PyQt6.QtCore import QThreadPool
 
@@ -234,10 +224,6 @@ class SettingsManager:
     @property
     def workflow(self) -> WorkflowSettings:
         return self._settings.workflow
-
-    @property
-    def log(self) -> LogSettings:
-        return self._settings.log
 
     @property
     def reader(self) -> ReaderSettings:

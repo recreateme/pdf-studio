@@ -1,5 +1,5 @@
 # UTF-8
-# PyInstaller Windows 版本资源（与 app/config/constants.py APP_VERSION 同步）
+# PyInstaller Windows 版本资源（与 app/config/constants.py 同步）
 VSVersionInfo(
   ffi=FixedFileInfo(
     filevers=(1, 0, 0, 0),
@@ -16,13 +16,13 @@ VSVersionInfo(
       [
       StringTable(
         u'080404B0',
-        [StringStruct(u'CompanyName', u'PDF Studio Team'),
-        StringStruct(u'FileDescription', u'PDF Studio - WPS 免费版 PDF 工具箱补位'),
+        [StringStruct(u'CompanyName', u'1299800632@qq.com'),
+        StringStruct(u'FileDescription', u'pd-studio - WPS 免费版 PDF 工具箱补位'),
         StringStruct(u'FileVersion', u'1.0.0'),
         StringStruct(u'InternalName', u'PDFStudio'),
-        StringStruct(u'LegalCopyright', u'Copyright (C) PDF Studio Team'),
+        StringStruct(u'LegalCopyright', u'Copyright (C) 1299800632@qq.com'),
         StringStruct(u'OriginalFilename', u'PDFStudio.exe'),
-        StringStruct(u'ProductName', u'PDF Studio'),
+        StringStruct(u'ProductName', u'pd-studio'),
         StringStruct(u'ProductVersion', u'1.0.0')])
       ]
     ),

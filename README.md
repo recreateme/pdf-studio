@@ -131,7 +131,7 @@ python scripts/pack_smoke.py
 - **OCR**：RapidOCR (ONNX)
 - **网页**：Playwright + Chromium / 系统浏览器
 - **配置**：Pydantic v2
-- **日志**：loguru
+- **依赖校验**：启动时可检测核心依赖缺失并提示
 
 ---
 

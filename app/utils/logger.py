@@ -1,64 +1,26 @@
 """
-PDF Studio - 日志系统
-基于 loguru 的结构化日志，支持文件轮转与控制台输出
+pd-studio - 轻量日志接口（不写文件、不创建 logs 目录）
+
+保留 loguru.logger 以便各模块现有 logger.info/warning 调用无需改动；
+默认不输出到文件，也不创建任何日志目录。
 """
-import sys
-from pathlib import Path
+from __future__ import annotations
+
 from loguru import logger
 
-from app.config.constants import LOGS_DIR
+# 移除 loguru 默认 stderr sink，避免无意输出；需要时可再由 setup_logger 挂接
+logger.remove()
 
 
 def setup_logger(level: str = "INFO") -> None:
     """
-    初始化日志系统
+    初始化日志（无文件）。
 
-    Args:
-        level: 日志级别 DEBUG/INFO/WARNING/ERROR
+    当前实现：清空所有 sink，不创建 logs 目录、不写任何日志文件。
+    ``level`` 参数保留以兼容旧调用，但不会启用文件或控制台落盘。
     """
-    # 移除默认处理器
+    del level  # 保留签名兼容
     logger.remove()
 
-    # ── 控制台输出（windowed 打包版 stderr 可能为 None）──
-    if sys.stderr is not None:
-        logger.add(
-            sys.stderr,
-            level=level,
-            format=(
-                "<green>{time:HH:mm:ss}</green> | "
-                "<level>{level: <8}</level> | "
-                "<cyan>{name}</cyan>:<cyan>{line}</cyan> - "
-                "<level>{message}</level>"
-            ),
-            colorize=True,
-        )
 
-    # ── 文件输出（按天轮转，保留7天）────────────
-    LOGS_DIR.mkdir(parents=True, exist_ok=True)
-    logger.add(
-        LOGS_DIR / "pdf_studio_{time:YYYY-MM-DD}.log",
-        level=level,
-        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{line} - {message}",
-        rotation="00:00",          # 每天零点轮转
-        retention="7 days",        # 保留7天
-        compression="zip",         # 旧日志压缩
-        encoding="utf-8",
-        enqueue=True,              # 线程安全异步写入
-    )
-
-    # ── 错误专用文件 ──────────────────────────
-    logger.add(
-        LOGS_DIR / "errors.log",
-        level="ERROR",
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line}\n{message}\n",
-        rotation="10 MB",
-        retention="30 days",
-        encoding="utf-8",
-        enqueue=True,
-    )
-
-    logger.info(f"日志系统初始化完成，级别: {level}")
-
-
-# 导出 logger 供全局使用
 __all__ = ["logger", "setup_logger"]

@@ -57,7 +57,6 @@ RESOURCES_DIR = APP_DIR / "resources"
 ICONS_DIR = RESOURCES_DIR / "icons"
 FONTS_DIR = RESOURCES_DIR / "fonts"
 CACHE_DIR = ROOT_DIR / "cache"
-LOGS_DIR = ROOT_DIR / "logs"
 TEMP_DIR = CACHE_DIR / "temp"
 
 # 用户数据目录（跨平台）

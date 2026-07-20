@@ -29,8 +29,8 @@ from app.config.constants import APP_NAME, APP_VERSION, CACHE_DIR, TEMP_DIR
 
 
 def init_directories() -> None:
-    """初始化必要目录"""
-    for d in [CACHE_DIR, TEMP_DIR, Path("logs")]:
+    """初始化必要目录（不创建 logs）"""
+    for d in [CACHE_DIR, TEMP_DIR]:
         d.mkdir(parents=True, exist_ok=True)
 
 
@@ -75,7 +75,7 @@ def main() -> int:
     # 1. 初始化目录
     init_directories()
 
-    # 2. 初始化日志与运行时配置
+    # 2. 初始化运行时配置
     settings_mgr.apply_runtime_settings()
     logger.info(f"{'='*50}")
     logger.info(f"{APP_NAME} v{APP_VERSION} 启动")
